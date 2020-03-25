@@ -14,15 +14,18 @@ class Card extends GameObject
 
     private  Init()
     {
-        let cardNumber: number = this.getCardNumberFrom(this.value[2]);
-        let cardType: number = parseInt(this.value[3]);
-        let cardIndex = ((cardType-1)*13) + cardNumber - 1;
-        console.log('cardIndex :' + cardIndex);
-        console.log('cardNumber :' + cardNumber);
-        console.log('cardType :' + cardType);
 
-
-        this.avatar = PIXI.Sprite.from(CardSheet[cardIndex]);
+        if(this.value !== '')
+        {
+            let cardNumber: number = this.getCardNumberFrom(this.value[2]);
+            let cardType: number = parseInt(this.value[3]);
+            let cardIndex = ((cardType-1)*13) + cardNumber;
+            this.avatar = PIXI.Sprite.from(CardSheet[cardIndex]);
+        }
+        else
+        {
+            this.avatar = PIXI.Sprite.from(CardSheet[0]);
+        }
         this.avatar.anchor.set(1);
         this.avatar.scale.x = 0.8;
         this.avatar.scale.y = 0.8;

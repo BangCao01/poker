@@ -21,5 +21,9 @@ export interface LoginState {
 
 export interface CardMessage {
   cards: string;
-  position: number;
+  positionId: number;
+  count: number;
+}
+export interface UserJoinRoomMessage {
+  count: number;
 }

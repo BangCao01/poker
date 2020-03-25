@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChatMessage, ChatState, LoginMessage, CardMessage } from '../types';
+import { ChatMessage, ChatState, LoginMessage, CardMessage, UserJoinRoomMessage } from '../types';
 import { ChatContext } from '../ChatContext';
 import * as PIXI from 'pixi.js';
 import myImage from '../assets/cards.png';
@@ -11,9 +11,10 @@ import getHistory from '../commons/history';
 class Poker extends Game {
   static contextType = ChatContext;
 
-  public Players: any = [];
+  public players: any = [];
   
-  public bunny: any = null;
+  public numOfPlayer: number = 0;
+  public myPlayer: any = null;
   public state: any = {app: null}
   constructor(props:any) {
     super(props);
@@ -25,33 +26,76 @@ class Poker extends Game {
     super.componentDidMount();
     // initiate socket connection
     this.context.init();
+    const observable = this.context.onJoinRoomMessage();
 
-    const observable = this.context.onMessage();
-
-    observable.subscribe((m: ChatMessage) => {
-      // let messages = this.state.messages;
+    observable.subscribe((m: UserJoinRoomMessage) => {
       console.log(m);
-      // messages.push(m);
-      // this.setState({ messages: messages });
+      this.updateUserInRoom(m.count);
+      this.layoutPlayerPosition();
     });
+    
     let initMessage = getHistory().location.state.message;
     console.log(initMessage);
     this.InitWith(initMessage);
+
+    
   }
   public Init()
   {
     // itit stuff
-     
-    
   }
 
   public InitWith(message: CardMessage)
   {   
 
-    let yourPlayer = new PokerPlayer(message.position, message.cards);
-    yourPlayer.setPosition(this.canvasApp.screen.width / 2 - 100 ,this.canvasApp.screen.height - 100);
-    this.canvasApp.stage.addChild(yourPlayer.avatar);
     
+    
+    let card = message.cards;
+    let player = new PokerPlayer(message.positionId, card);
+    this.players.push(player);
+    this.canvasApp.stage.addChild(player.avatar);
+    this.myPlayer = player;
+    
+    let num = '' + sessionStorage.getItem('numOfPlayer');
+    let count = parseInt(num);
+    console.log('count : ' + count);
+    count = (message.count > count || num.length <=0 ) ? message.count: count;
+    if(count > 1)
+    {
+      
+      this.updateUserInRoom(count);
+    } 
+    this.layoutPlayerPosition();
+    
+    
+  }
+
+  public updateUserInRoom(count: number)
+  {   
+
+    let card = ',';
+    for(let i: number = 1; i <= count; i++ )
+    {
+          if(i !== this.myPlayer.positionId)
+          {
+            let player = new PokerPlayer(i, card);
+            this.players.push(player);
+            this.canvasApp.stage.addChild(player.avatar);
+          }
+
+    }
+    this.numOfPlayer = count;
+    sessionStorage.setItem('numOfPlayer', this.numOfPlayer.toString()); 
+  }
+
+  public layoutPlayerPosition()
+  {
+
+    for(let i: number = 0 ; i < this.players.length; i++ )
+      {
+        this.players[i].setPosition(this.canvasApp.screen.width / 2 - 100 ,this.canvasApp.screen.height - 100 - i*100);
+      }
+
   }
 
   public loadResource()

@@ -32,6 +32,10 @@ export class SocketService {
     return fromEvent(this.socket, 'message');
   }
 
+  public onJoinRoomMessage (): Observable<ChatMessage> {
+    return fromEvent(this.socket, 'userJoinRoom');
+  }
+
   // disconnect - used when unmounting
   public disconnect (): void {
     this.socket.disconnect();

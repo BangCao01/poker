@@ -8,7 +8,7 @@ import Room from './commons/Room';
 
 var cors = require('cors');
 
-export class ChatServer {
+export class GameServer {
   public static readonly PORT: number = 8080;
   private _app: express.Application;
   private server: Server;
@@ -18,7 +18,7 @@ export class ChatServer {
 
   constructor () {
     this._app = express();
-    this.port = process.env.PORT || ChatServer.PORT;
+    this.port = process.env.PORT || GameServer.PORT;
     this._app.use(cors());
     this._app.options('*', cors());
     this.server = createServer(this._app);
@@ -39,13 +39,11 @@ export class ChatServer {
 
     this.io.on(ChatEvent.CONNECT, (socket: any) => {
       console.log('Connected client on port %s.', this.port);
-
       const room: Room = this.roomManager.getARoom();
-      socket.join(room.getRoomName());
-      // var tempBuffer = Buffer.from('hello world', 'ascii');
-      this.io.to(room.getRoomName()).emit('start_game', {message:'an user connected'});
+        socket.join(room.getRoomName());
 
       socket.on(ChatEvent.LOGIN, (m: LoginMessage) => {
+        
         console.log('[server](message): %s', JSON.stringify(m));
         const username = m.username;
         const password = m.password;
@@ -53,7 +51,9 @@ export class ChatServer {
         let cardMessage: any = {};
         cardMessage.cards = player.getCards();
         cardMessage.positionId = player.GetPositionId();
+        cardMessage.count = room.getCount();
         this.io.emit('loginMessage', cardMessage);
+        this.io.to(room.getRoomName()).emit('userJoinRoom', {count: room.getCount()});
       });
 
       socket.on(ChatEvent.MESSAGE, (m: ChatMessage) => {

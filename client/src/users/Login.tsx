@@ -19,7 +19,7 @@ class Login extends React.Component {
 
   componentDidMount () {
     
-
+    sessionStorage.setItem('numOfPlayer', '');
     //initiate socket connection
     this.context.init();
 

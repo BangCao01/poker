@@ -55,10 +55,14 @@ import card49 from '../assets/sheets/49.png';
 import card50 from '../assets/sheets/50.png';
 import card51 from '../assets/sheets/51.png';
 
+import avatar0 from '../assets/avatar0.png';
 import avatar1 from '../assets/avatar1.png';
+import avatar2 from '../assets/avatar2.png';
+import avatar3 from '../assets/avatar3.png';
+import cardback from '../assets/sheets/cardback.png';
 
 export const CardSheet = 
-[card0, card1, card2, card3, card4, card5, card6, card7, card8, card9, card10, card11, card12,
+[cardback, card0, card1, card2, card3, card4, card5, card6, card7, card8, card9, card10, card11, card12,
  card13, card14, card15, card16, card17, card18, card19, card20, card21, card22, card23, card24, card25,
  card26, card27, card28, card29, card30, card31, card32, card33, card34, card35, card36, card37, card38,
  card39, card40, card41, card42, card43, card44, card45, card46, card47, card48, card49, card50, card51
